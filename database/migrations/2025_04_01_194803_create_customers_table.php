@@ -14,6 +14,10 @@ return new class extends Migration {
             $table->string('document')->unique();
             $table->string('email')->unique();
             $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('address_number')->nullable();
+            $table->string('address_complement')->nullable();
+            $table->string('postal_code')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
