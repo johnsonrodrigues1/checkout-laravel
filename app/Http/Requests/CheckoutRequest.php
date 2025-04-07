@@ -29,16 +29,20 @@ class CheckoutRequest extends FormRequest
                 'min:16',
                 'max:16',
             ],
-            'payment-method' => 'required|in:1,2,3',
+            'payment_method' => 'required|in:1,2,3',
         ];
 
-        if ($this->input('payment-method') === '2') {
+        if ($this->input('payment_method') === '2') {
             $rules = array_merge($rules, [
-                'holder-name' => 'required|string|max:255',
-                'card-number' => 'required|digits:16',
-                'expiration-month' => 'required|digits:2|integer|min:1|max:12',
-                'expiration-year' => 'required|digits:2',
-                'security-code' => 'required|digits:3',
+                'address' => 'sometimes|nullable|string|max:255',
+                'address_number' => 'sometimes|nullable|string|max:255',
+                'address_complement' => 'sometimes|nullable|string|max:255',
+                'postal_code' => 'sometimes|nullable|string|max:10',
+                'holder_name' => 'required|string|max:255',
+                'card_number' => 'required',
+                'expiration_month' => 'required|digits:2|integer|min:1|max:12',
+                'expiration_year' => 'required|digits:2',
+                'security_code' => 'required|digits:3',
             ]);
         }
 
@@ -58,19 +62,18 @@ class CheckoutRequest extends FormRequest
             'phone.required' => 'O campo telefone é obrigatório.',
             'phone.min' => 'O telefone deve conter 11 dígitos.',
             'phone.max' => 'O telefone deve conter 15 dígitos.',
-            'payment-method.required' => 'Selecione uma forma de pagamento.',
-            'payment-method.in' => 'Forma de pagamento inválida.',
-            'holder-name.required' => 'O nome impresso no cartão é obrigatório.',
-            'card-number.required' => 'O número do cartão é obrigatório.',
-            'card-number.digits' => 'O número do cartão deve conter 16 dígitos.',
-            'expiration-month.required' => 'O mês de expiração é obrigatório.',
-            'expiration-month.digits' => 'O mês de expiração deve conter 2 dígitos.',
-            'expiration-month.min' => 'O mês de expiração deve ser entre 01 e 12.',
-            'expiration-month.max' => 'O mês de expiração deve ser entre 01 e 12.',
-            'expiration-year.required' => 'O ano de expiração é obrigatório.',
-            'expiration-year.digits' => 'O ano de expiração deve conter 2 dígitos.',
-            'security-code.required' => 'O código de segurança é obrigatório.',
-            'security-code.digits' => 'O código de segurança deve conter 3 dígitos.',
+            'payment_method.required' => 'Selecione uma forma de pagamento.',
+            'payment_method.in' => 'Forma de pagamento inválida.',
+            'holder_name.required' => 'O nome impresso no cartão é obrigatório.',
+            'card_number.required' => 'O número do cartão é obrigatório.',
+            'expiration_month.required' => 'O mês de expiração é obrigatório.',
+            'expiration_month.digits' => 'O mês de expiração deve conter 2 dígitos.',
+            'expiration_month.min' => 'O mês de expiração deve ser entre 01 e 12.',
+            'expiration_month.max' => 'O mês de expiração deve ser entre 01 e 12.',
+            'expiration_year.required' => 'O ano de expiração é obrigatório.',
+            'expiration_year.digits' => 'O ano de expiração deve conter 2 dígitos.',
+            'security_code.required' => 'O código de segurança é obrigatório.',
+            'security_code.digits' => 'O código de segurança deve conter 3 dígitos.',
         ];
     }
 }

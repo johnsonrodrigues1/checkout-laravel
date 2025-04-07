@@ -16,6 +16,10 @@ class Customer extends Model
         'document',
         'email',
         'phone',
+        'address',
+        'address_number',
+        'address_complement',
+        'postal_code',
     ];
 
 

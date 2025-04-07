@@ -8,9 +8,10 @@ use Illuminate\Support\Facades\Log;
 
 class AsaasPaymentGateway extends AbstractAsaasGateway
 {
-    public function createPayment(int $paymentMethod, array $data): array
+    public function createPayment(array $data): array
     {
-        return match ($paymentMethod) {
+
+        return match ($data['billing_type']) {
             1 => $this->createPixPayment($data),
             2 => $this->createCreditCardPayment($data),
             3 => $this->createBilletPayment($data),
@@ -21,75 +22,87 @@ class AsaasPaymentGateway extends AbstractAsaasGateway
         };
     }
 
-
     protected function createBilletPayment(array $data): array
     {
-        $payload = [
-            'customer' => $data['customer_id'],
-            'billingType' => 'BOLETO',
-            'value' => $data['amount'],
-            'dueDate' => $data['due_date'],
-            'externalReference' => $data['order_id'],
-            'remoteIp' => $data['remote_ip'],
-        ];
-        return $this->sendRequest($payload);
-    }
-
-    protected function createCreditCardPayment(array $data): array
-    {
-        $payload = [
-            'creditCardHolderInfo' => [
-                'name' => $data['customer_name'],
-                'email' => $data['customer_email'],
-                'cpfCnpj' => $data['customer_document'],
-                'postalCode' => $data['customer_postal_code'],
-                'addressNumber' => $data['customer_address_number'],
-                'phone' => $data['customer_phone']
-            ],
-            'creditCard' => [
-                'holderName' => $data['holder_name'],
-                'number' => $data['credit_card_number'],
-                'expiryMonth' => $data['credit_card_expiry_month'],
-                'expiryYear' => $data['credit_card_expiry_year'],
-                'ccv' => $data['credit_card_security_code'],
-            ],
-            'customer' => $data['customer_id'],
-            'billingType' => 'CREDIT_CARD',
-            'value' => $data['amount'],
-            'dueDate' => $data['due_date'],
-            'externalReference' => $data['order_id'],
-            'remoteIp' => $data['remote_ip'],
-        ];
+        $payload = $this->buildBasePayload($data, 'BOLETO');
         return $this->sendRequest($payload);
     }
 
     protected function createPixPayment(array $data): array
     {
-        $payload = [
-            'customer' => $data['customer_id'],
-            'billingType' => 'PIX',
+        $payload = $this->buildBasePayload($data, 'PIX');
+        return $this->sendRequest($payload);
+    }
+
+    protected function createCreditCardPayment(array $data): array
+    {
+        $payload = $this->buildBasePayload($data, 'CREDIT_CARD');
+
+
+        $creditCardHolderInfo = $data['creditCard']['creditCardHolderInfo'];
+        $creditCard = $data['creditCard']['creditCardInfo'];
+
+        $payload = array_merge($payload, [
+            'creditCardHolderInfo' => [
+                'name' => $creditCardHolderInfo['customer_name'],
+                'email' => $creditCardHolderInfo['customer_email'],
+                'cpfCnpj' => $creditCardHolderInfo['customer_document'],
+                'postalCode' => $creditCardHolderInfo['customer_postal_code'],
+                'addressNumber' => $creditCardHolderInfo['customer_address_number'],
+                'phone' => $creditCardHolderInfo['customer_phone']
+            ],
+            'creditCard' => [
+                'holderName' => $creditCard['holder_name'],
+                'number' => $creditCard['card_number'],
+                'expiryMonth' => $creditCard['expiration_month'],
+                'expiryYear' => $creditCard['expiration_year'],
+                'ccv' => $creditCard['security_code'],
+            ],
+        ]);
+
+        return $this->sendRequest($payload);
+    }
+
+
+    private function buildBasePayload(array $data, string $billingType): array
+    {
+        return [
+            'customer' => $data['customer'],
+            'billingType' => $billingType,
             'value' => $data['amount'],
             'dueDate' => $data['due_date'],
-            'externalReference' => $data['order_id'],
+            'externalReference' => $data['external_reference'],
             'remoteIp' => $data['remote_ip'],
         ];
-        return $this->sendRequest($payload);
     }
 
     protected function sendRequest(array $payload): array
     {
         try {
-            $response = Http::withHeaders([
+            $responseAsaas = Http::withHeaders([
                 'access_token' => $this->apiKey,
                 'accept' => 'application/json',
                 'content-type' => 'application/json',
-            ])->post($this->baseUrl."/payments", $payload);
+            ])->post($this->baseUrl . "/payments", $payload);
 
-            if ($response->failed()) {
-                Log::error('Erro na API do Asaas', ['response' => $response->body()]);
-                throw new Exception('Erro ao processar o pagamento.');
+            if ($responseAsaas->failed()) {
+                $response = json_decode($responseAsaas->body(), true);
+                if (isset($response['errors'])) {
+                    $errorMessage = implode(', ', array_map(fn($error) => $error['description'], $response['errors']));
+                    Log::error('Erro na API do Asaas', ['errors' => $errorMessage]);
+                    return [
+                        'error' => true,
+                        'message' => $errorMessage
+                    ];
+                }
             }
-            return $response->json();
+
+            $response = json_decode($responseAsaas->body(), true);
+            return [
+                'error' => false,
+                'message' => 'Pagamento processado com sucesso.',
+                'payment' => $response
+            ];
         } catch (Exception $e) {
             Log::error('Exception ao integrar com o Asaas: ' . $e->getMessage());
             return [

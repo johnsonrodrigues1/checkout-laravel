@@ -28,6 +28,7 @@
                                    required
                                    class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
                         </div>
+
                         <div class="flex-1">
                             <label for="document" class="block text-sm font-medium text-gray-700">CPF/CNPJ</label>
                             <input type="text" id="document" value="{{old('document')}}" name="document"
@@ -49,55 +50,92 @@
                                    class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
                         </div>
                     </div>
+                    <div class="flex gap-4 mt-4">
+                        <div class="flex-1">
+                            <label for="address" class="block text-sm font-medium text-gray-700">Endereço</label>
+                            <input type="text" id="address" name="address" placeholder="Seu endereço"
+                                   value="{{old('address')}}"
+                                   class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
+                        </div>
+                        <div class="flex-1">
+                            <label for="address_number" class="block text-sm font-medium text-gray-700">Número</label>
+                            <input type="text" id="address_number" name="address_number" placeholder="Número"
+                                   value="{{old('address_number')}}"
+                                   class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 mt-4">
+                        <div class="flex-1">
+                            <label for="address_complement"
+                                   class="block text-sm font-medium text-gray-700">Complemento</label>
+                            <input type="text" id="address_complement" name="address_complement"
+                                   placeholder="Complemento"
+                                   value="{{old('address_complement')}}"
+                                   class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
+                        </div>
+                        <div class="flex-1">
+                            <label for="postal_code" class="block text-sm font-medium text-gray-700">CEP</label>
+                            <input type="text" id="postal_code" name="postal_code" placeholder="CEP"
+                                   value="{{old('postal_code')}}"
+                                   class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
+                        </div>
+                    </div>
+
+
                     <hr class="my-4"/>
                     <h3 class="text-xl font-semibold mb-2">Selecione a forma de pagamento</h3>
-                    <input type="hidden" name="payment-method" id="payment-method" value="">
+                    <input type="hidden" name="payment_method" id="payment_method" value="">
                     <div class="flex flex-wrap gap-4">
                         <button id="btnCreditCard" type="button"
-                                class="{{old('payment-method')==2 ? 'bg-indigo-600 text-white' :'' }} flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="{{old('payment_method')==2 ? 'bg-indigo-600 text-white' :'' }} flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Cartão de Crédito
                         </button>
                         <button id="btnBillet" type="button"
-                                class="{{old('payment-method')==3 ? 'bg-indigo-600 text-white' :'' }}  flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="{{old('payment_method')==3 ? 'bg-indigo-600 text-white' :'' }}  flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Boleto
                         </button>
                         <button id="btnPix" type="button"
-                                class="{{old('payment-method')==1 ? 'bg-indigo-600 text-white' :'' }} flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="{{old('payment_method')==1 ? 'bg-indigo-600 text-white' :'' }} flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:ring-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             PIX
                         </button>
                     </div>
-                    <div id="creditCardFields" style="display: none;">
+                    <div id="creditCardFields" style="{{old('payment_method')!=2 ?'display:none' :' ' }}">
                         <div class="flex gap-4 mt-4">
                             <div class="flex-1">
-                                <label for="holder-name" class="block text-sm font-medium text-gray-700">Nome impresso
+                                <label for="holder_name" class="block text-sm font-medium text-gray-700">Nome impresso
                                     no cartão</label>
-                                <input type="text" id="holder-name" name="holder-name"
+                                <input type="text" id="holder_name" name="holder_name"
                                        placeholder="Nome impresso no cartão"
+                                       value="{{old('holder_name')}}"
                                        class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
                             </div>
                             <div class="flex-1">
-                                <label for="card-number" class="block text-sm font-medium text-gray-700">Número do
+                                <label for="card_number" class="block text-sm font-medium text-gray-700">Número do
                                     cartão</label>
-                                <input type="text" id="card-number" name="card-number" placeholder="1234 1234 1234 1234"
+                                <input type="text" id="card_number" name="card_number" placeholder="1234 1234 1234 1234"
+                                       value="{{old('card_number')}}"
                                        class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
                             </div>
                         </div>
                         <div class="flex gap-4 mt-4">
                             <div class="w-1/3">
-                                <label for="expiration-month" class="block text-sm font-medium text-gray-700">Mês de
+                                <label for="expiration_month" class="block text-sm font-medium text-gray-700">Mês de
                                     expiração</label>
-                                <input type="text" id="expiration-month" name="expiration-month" placeholder="MM"
+                                <input type="text" id="expiration_month" name="expiration_month" placeholder="MM"
+                                       value="{{old('expiration_month')}}"
                                        class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
                             </div>
                             <div class="w-1/3">
-                                <label for="expiration-year" class="block text-sm font-medium text-gray-700">Ano de
+                                <label for="expiration_year" class="block text-sm font-medium text-gray-700">Ano de
                                     expiração</label>
-                                <input type="text" id="expiration-year" name="expiration-year" placeholder="YY"
+                                <input type="text" id="expiration_year" name="expiration_year" placeholder="YY"
+                                       value="{{old('expiration_year')}}"
                                        class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
                             </div>
                             <div class="w-1/3">
-                                <label for="security-code" class="block text-sm font-medium text-gray-700">CVV</label>
-                                <input type="text" id="security-code" name="security-code" placeholder="123"
+                                <label for="security_code" class="block text-sm font-medium text-gray-700">CVV</label>
+                                <input type="text" id="security_code" name="security_code" placeholder="123"
+                                       value="{{old('security_code')}}"
                                        class="mt-1 p-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-indigo-500"/>
                             </div>
                         </div>
@@ -186,16 +224,16 @@
     document.getElementById("phone").addEventListener("input", function () {
         this.value = maskPhone(this.value);
     });
-    document.getElementById("card-number").addEventListener("input", function () {
+    document.getElementById("card_number").addEventListener("input", function () {
         this.value = maskCardNumber(this.value);
     });
-    document.getElementById("expiration-month").addEventListener("input", function () {
+    document.getElementById("expiration_month").addEventListener("input", function () {
         this.value = maskExpiration(this.value);
     });
-    document.getElementById("expiration-year").addEventListener("input", function () {
+    document.getElementById("expiration_year").addEventListener("input", function () {
         this.value = maskExpiration(this.value);
     });
-    document.getElementById("security-code").addEventListener("input", function () {
+    document.getElementById("security_code").addEventListener("input", function () {
         this.value = maskSecurityCode(this.value);
     });
 
@@ -204,7 +242,7 @@
         const btnBillet = document.getElementById("btnBillet");
         const btnPix = document.getElementById("btnPix");
         const creditCardFields = document.getElementById("creditCardFields");
-        const inputPaymentMethod = document.getElementById("payment-method");
+        const inputPaymentMethod = document.getElementById("payment_method");
 
         function removeActive() {
             btnCreditCard.classList.remove("bg-indigo-600", "text-white");
@@ -220,21 +258,21 @@
             removeActive();
             btnCreditCard.classList.add("bg-indigo-600", "text-white");
             creditCardFields.style.display = "block";
-            inputPaymentMethod.value = "2";
+            inputPaymentMethod.value = 2;
         });
 
         btnBillet.addEventListener("click", function () {
             removeActive();
             btnBillet.classList.add("bg-indigo-600", "text-white");
             creditCardFields.style.display = "none";
-            inputPaymentMethod.value = "3";
+            inputPaymentMethod.value = 3;
         });
 
         btnPix.addEventListener("click", function () {
             removeActive();
             btnPix.classList.add("bg-indigo-600", "text-white");
             creditCardFields.style.display = "none";
-            inputPaymentMethod.value = "1";
+            inputPaymentMethod.value = 1;
         });
 
         function showError(message) {
@@ -279,11 +317,25 @@
                 return;
             }
             if (creditCardFields.style.display === "block") {
-                const holderName = document.getElementById("holder-name").value.trim();
-                const cardNumber = document.getElementById("card-number").value.replace(/\D/g, '');
-                const expMonth = document.getElementById("expiration-month").value.replace(/\D/g, '');
-                const expYear = document.getElementById("expiration-year").value.replace(/\D/g, '');
-                const securityCode = document.getElementById("security-code").value.replace(/\D/g, '');
+                const address = document.getElementById("address").value.trim();
+                const addressNumber = document.getElementById("address_number").value.trim();
+                const addressComplement = document.getElementById("address_complement").value.trim();
+                const postalCode = document.getElementById("postal_code").value.replace(/\D/g, '');
+                if (!address || !addressNumber || !addressComplement || !postalCode) {
+                    showError("Por favor, preencha todos os campos de endereço obrigatórios.");
+                    event.preventDefault();
+                    return;
+                }
+                if (postalCode.length !== 8) {
+                    showError("CEP inválido. Informe 8 dígitos.");
+                    event.preventDefault();
+                    return;
+                }
+                const holderName = document.getElementById("holder_name").value.trim();
+                const cardNumber = document.getElementById("card_number").value.replace(/\D/g, '');
+                const expMonth = document.getElementById("expiration_month").value.replace(/\D/g, '');
+                const expYear = document.getElementById("expiration_year").value.replace(/\D/g, '');
+                const securityCode = document.getElementById("security_code").value.replace(/\D/g, '');
                 if (!holderName) {
                     showError("Por favor, preencha o nome impresso no cartão.");
                     event.preventDefault();
@@ -314,7 +366,6 @@
 </script>
 
 @if ($errors->any())
-    {{dd($errors)}}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const modal = document.getElementById("errorModal");

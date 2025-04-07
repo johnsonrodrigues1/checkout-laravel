@@ -26,7 +26,7 @@ class CustomerService
                 return $customer;
             }
 
-            $asaasResponse = $asaasGateway->create($data);
+            $asaasResponse = $asaasGateway->create($this->mountAsaasPayload($data));
 
             if ($asaasResponse && isset($asaasResponse['id'])) {
                 $customer->update(['external_id' => $asaasResponse['id']]);
@@ -37,7 +37,7 @@ class CustomerService
             return $customer;
         }
 
-        $asaasResponse = $asaasGateway->create($data);
+        $asaasResponse = $asaasGateway->create($this->mountAsaasPayload($data));
         if ($asaasResponse && isset($asaasResponse['id'])) {
             $data['external_id'] = $asaasResponse['id'];
         } else {
@@ -45,5 +45,19 @@ class CustomerService
         }
 
         return $this->customerRepository->create($data);
+    }
+
+    private function mountAsaasPayload(array $data): array
+    {
+        return [
+            'name' => $data['name'],
+            'cpfCnpj' => $data['document'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'address' => $data['address'] ?? null,
+            'addressNumber' => $data['address_number'] ?? null,
+            'addressComplement' => $data['address_complement'] ?? null,
+            'postalCode' => $data['postal_code'] ?? null,
+        ];
     }
 }
